@@ -14,7 +14,11 @@ export class ContaService {
         return await this.contaRepository.find();
     }
 
-    async findOne(options: FindOneOptions<Conta>): Promise<Conta> {
+    async findOne(id: number): Promise<Conta> {
+        const options: FindOneOptions<Conta> = {
+            where: { id }
+        }
+
         return await this.contaRepository.findOne(options);
     }
 
@@ -36,13 +40,9 @@ export class ContaService {
         return await this.contaRepository.findOne(options)
     }
 
-    async delete(conta: Conta, id: number): Promise<{ msg: String }> {
-        if (!conta) {
+    async delete(id: number): Promise<{ msg: String }> {
+        if (!id) {
             throw new NotFoundException('Registro não encontrado')
-        }
-
-        const options: FindOneOptions<Conta> = {
-            where: { id }
         }
 
         await this.contaRepository.delete(id)
