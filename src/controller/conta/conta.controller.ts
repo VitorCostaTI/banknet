@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { Conta } from 'src/Model/Contas';
 import { ContaService } from 'src/services/conta/conta.service';
 import { FindOneOptions } from 'typeorm';
