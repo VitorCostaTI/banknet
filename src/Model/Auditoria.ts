@@ -12,5 +12,5 @@ export class Auditoria{
 
     @Column()
     @IsNotEmpty()
-    data: Date
+    data: Date;
 }

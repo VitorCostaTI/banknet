@@ -8,12 +8,12 @@ export class Pagamentos {
 
     @Column()
     @IsNotEmpty()
-    valor: Number;
+    valor: number;
 
     @Column()
     @IsNotEmpty()
     @Min(0)
-    id_conta: Number;
+    id_conta: number;
 
     @Column()
     @IsNotEmpty()
