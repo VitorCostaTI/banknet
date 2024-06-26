@@ -1,5 +1,4 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, InternalServerErrorException, Param, Post, Put } from '@nestjs/common';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { Conta } from 'src/Model/Contas';
 import { ContaService } from 'src/services/conta/conta.service';
 
