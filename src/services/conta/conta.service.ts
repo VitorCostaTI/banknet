@@ -27,9 +27,6 @@ export class ContaService {
     }
 
     async update(id: number, conta: Conta): Promise<Conta> {
-        if (!conta) {
-            throw new NotFoundException('Registro de conta não identificado');
-        }
 
         const options: FindOneOptions<Conta> = {
             where: { id }
@@ -41,9 +38,6 @@ export class ContaService {
     }
 
     async delete(id: number): Promise<{ msg: String }> {
-        if (!id) {
-            throw new NotFoundException('Registro não encontrado')
-        }
 
         await this.contaRepository.delete(id)
 
