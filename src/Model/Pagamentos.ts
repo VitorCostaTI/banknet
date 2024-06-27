@@ -1,5 +1,6 @@
 import { IsNotEmpty, Min } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Conta } from "./Contas";
 
 @Entity()
 export class Pagamentos {
@@ -10,9 +11,9 @@ export class Pagamentos {
     @IsNotEmpty()
     valor: number;
 
-    @Column()
     @IsNotEmpty()
     @Min(0)
+    @ManyToOne(() => Conta, conta => conta.pagamentos)
     id_conta: number;
 
     @Column()

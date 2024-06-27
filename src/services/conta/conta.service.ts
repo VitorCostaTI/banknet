@@ -11,16 +11,17 @@ export class ContaService {
     ) { }
 
     async findAll(): Promise<Conta[]> {
-        return await this.contaRepository.find();
+        return await this.contaRepository.find({relations: ['pagamentos']});
     }
 
     async findOne(id: number): Promise<Conta> {
         const options: FindOneOptions<Conta> = {
-            where: { id }
-        }
-
+          where: { id },
+          relations: ['pagamentos'],
+        };
+    
         return await this.contaRepository.findOne(options);
-    }
+      }
 
     async create(conta: Conta) {
         return await this.contaRepository.save(conta)

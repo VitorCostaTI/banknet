@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, InternalServerErrorException, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, InternalServerErrorException, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { Conta } from 'src/Model/Contas';
 import { ContaService } from 'src/services/conta/conta.service';
 
@@ -28,7 +28,7 @@ export class ContaController {
     
     @Get(':id')
     @HttpCode(200)
-    async getId(@Param('id') id: number) {      
+    async getId(@Param('id', ParseIntPipe) id: number) {      
         try {
             return await this.contaService.findOne(id);
         } catch (error) {
@@ -38,7 +38,7 @@ export class ContaController {
     
     @Put(':id')
     @HttpCode(201)
-    async update(@Param('id') id: number, @Body() conta: Conta) {
+    async update(@Param('id', ParseIntPipe) id: number, @Body() conta: Conta) {
         try {
             return await this.contaService.update(id, conta);
         } catch (error) {
@@ -48,7 +48,7 @@ export class ContaController {
     
     @Delete(':id')
     @HttpCode(201)
-    async delete(@Param('id') id: number){
+    async delete(@Param('id', ParseIntPipe) id: number){
         try {
             return await this.contaService.delete(id);
         } catch (error) {

@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsString, Min } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { IsNotEmpty, Min } from "class-validator";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Pagamentos } from "./Pagamentos";
 
 @Entity()
 export class Conta {
@@ -8,15 +9,16 @@ export class Conta {
     id?: number;
 
     @Column()
-    @IsString()
     nome: string;
-    
+
     @Column()
-    @IsString()
     tipo_conta: string;
 
     @Column()
     @Min(0)
     @IsNotEmpty()
     saldo_inicial: number;
+
+    @OneToMany(() => Pagamentos, pagamentos => pagamentos.id_conta)
+    pagamentos: Pagamentos[];
 }
