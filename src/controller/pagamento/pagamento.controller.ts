@@ -1,26 +1,37 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, InternalServerErrorException, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common';
 import { Pagamentos } from 'src/Model/Pagamentos';
 import { PagamentosService } from 'src/services/pagamentos/pagamentos.service';
 
 @Controller('pagamento')
 export class PagamentoController {
-    constructor(
-        private pagamentoService: PagamentosService
-    ) { }
+    constructor(private pagamentoService: PagamentosService) { }
 
     @Post()
     @HttpCode(201)
     async create(@Body() pagamento: Pagamentos) {
-        return await this.pagamentoService.create(pagamento)
+        return await this.pagamentoService.create(pagamento);
     }
 
-    @Get()
+    @Get(':id')
     @HttpCode(200)
-    async get() {
+    async get(
+        @Param() id: number,
+        @Query('startDate') startDate: string,
+        @Query('endDate') endDate: string,
+    ) {
         try {
-            return await this.pagamentoService.findAll()
+            if (!startDate || !endDate) {
+                throw new BadRequestException('startDate e endDate são obrigatórios');
+            }
+
+            const pagamentos = await this.pagamentoService.findAll(
+                id,
+                new Date(startDate),
+                new Date(endDate),
+            );
+            return pagamentos;
         } catch (error) {
-            throw new BadRequestException('Não foi possivel buscar pagamentos')
+            throw new BadRequestException('Não foi possível buscar pagamentos');
         }
     }
 }

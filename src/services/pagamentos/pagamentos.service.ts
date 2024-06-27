@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Conta } from 'src/Model/Contas';
 import { Pagamentos } from 'src/Model/Pagamentos';
-import { FindOneOptions, Repository } from 'typeorm';
+import { Between, FindOneOptions, Repository } from 'typeorm';
 
 @Injectable()
 export class PagamentosService {
@@ -13,8 +13,20 @@ export class PagamentosService {
         private pagamentoRepository: Repository<Pagamentos>,
     ) { }
 
-    async findAll(): Promise<Pagamentos[]> {
-        return await this.pagamentoRepository.find()
+    async findAll(id_conta:number, startDate: Date, endDate: Date): Promise<{periodoCadastro: Pagamentos[], totalPagamento: number}> {
+        const periodoCadastro = await this.pagamentoRepository.find({
+            where: {
+                id_conta,
+                data: Between(startDate, endDate),
+            },
+        });
+
+        const totalPagamento = periodoCadastro.reduce((acc, pagamento) => acc + pagamento.valor, 0);
+
+        return{
+            periodoCadastro,
+            totalPagamento
+        }
     }
 
     async findOne(id: number): Promise<Pagamentos> {
@@ -38,11 +50,10 @@ export class PagamentosService {
         const novoPagamento = this.pagamentoRepository.create(pagamento);
         const pagamentoSalvo = await this.pagamentoRepository.save(novoPagamento);
 
-        if(pagamento.valor > conta.saldo_inicial){
-            throw new NotFoundException(`Conta de ${ conta.nome} não possui saldo suficiente`);
+        if (pagamento.valor > conta.saldo_inicial) {
+            throw new NotFoundException(`Conta de ${conta.nome} não possui saldo suficiente`);
         }
 
-        // Atualizar o saldo da conta
         conta.saldo_inicial = conta.saldo_inicial - pagamento.valor;
         await this.contaRepository.save(conta);
 
@@ -59,7 +70,7 @@ export class PagamentosService {
     }
 
     async delete(id: number): Promise<{ msg: String }> {
-        
+
         await this.pagamentoRepository.delete(id);
 
         return { msg: 'Pagamento deletado com sucesso' }
