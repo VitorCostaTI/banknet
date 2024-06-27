@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Conta } from 'src/Model/Contas';
 import { Pagamentos } from 'src/Model/Pagamentos';
 import { FindOneOptions, Repository } from 'typeorm';
 
@@ -22,11 +21,15 @@ export class PagamentosService {
         return await this.pagamentoRepository.findOne(options);
     }
 
-    async update(id: number, conta: Conta): Promise<Pagamentos> {
+    async create(pagamento: Pagamentos) {
+        return await this.pagamentoRepository.save(pagamento)
+    }
+
+    async update(id: number, pagamento: Pagamentos): Promise<Pagamentos> {
         const options: FindOneOptions<Pagamentos> = {
             where: { id },
         }
-        await this.pagamentoRepository.update(id, conta);
+        await this.pagamentoRepository.update(id, pagamento);
 
         return await this.pagamentoRepository.findOne(options);
     }
