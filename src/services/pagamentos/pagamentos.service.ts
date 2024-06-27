@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Conta } from 'src/Model/Contas';
 import { Pagamentos } from 'src/Model/Pagamentos';
@@ -13,27 +13,32 @@ export class PagamentosService {
         private pagamentoRepository: Repository<Pagamentos>,
     ) { }
 
-    async findAll(id_conta:number, startDate: Date, endDate: Date): Promise<{periodoCadastro: Pagamentos[], totalPagamento: number}> {
-        const periodoCadastro = await this.pagamentoRepository.find({
-            where: {
-                id_conta,
-                data: Between(startDate, endDate),
-            },
-        });
+    async findAll(id_conta: number, startDate: Date, endDate: Date): Promise<{ periodoCadastro: Pagamentos[], totalPagamento: number }> {
+        try {
+            const periodoCadastro = await this.pagamentoRepository.find({
+                where: {
+                    id_conta,
+                    data: Between(startDate, endDate),
+                },
+            });
 
-        const totalPagamento = periodoCadastro.reduce((acc, pagamento) => acc + pagamento.valor, 0);
+            const totalPagamento = periodoCadastro.reduce((acc, pagamento) => acc + pagamento.valor, 0);
 
-        return{
-            periodoCadastro,
-            totalPagamento
+            return {
+                periodoCadastro,
+                totalPagamento
+            }
+        } catch (error) {
+            throw new NotAcceptableException('Não foi possivel buscar pagamentos')
         }
     }
 
-    async findOne(id: number): Promise<Pagamentos> {
-        const options: FindOneOptions<Pagamentos> = {
-            where: { id }
+    async findOne(id: number): Promise<Pagamentos[]> {
+        try {
+            return await this.pagamentoRepository.find({ where: { id } })
+        } catch (error) {
+            throw new NotAcceptableException('Não foi possivel buscar pagamento')
         }
-        return await this.pagamentoRepository.findOne(options);
     }
 
     async create(pagamento: Partial<Pagamentos>): Promise<Pagamentos> {
@@ -61,18 +66,24 @@ export class PagamentosService {
     }
 
     async update(id: number, pagamento: Pagamentos): Promise<Pagamentos> {
-        const options: FindOneOptions<Pagamentos> = {
-            where: { id },
-        }
-        await this.pagamentoRepository.update(id, pagamento);
+        try {
+            const options: FindOneOptions<Pagamentos> = {
+                where: { id },
+            }
+            await this.pagamentoRepository.update(id, pagamento);
 
-        return await this.pagamentoRepository.findOne(options);
+            return await this.pagamentoRepository.findOne(options);
+        } catch (error) {
+            throw new InternalServerErrorException('Não foi possivel atualizar pagamento')
+        }
     }
 
     async delete(id: number): Promise<{ msg: String }> {
-
-        await this.pagamentoRepository.delete(id);
-
-        return { msg: 'Pagamento deletado com sucesso' }
+        try {
+            await this.pagamentoRepository.delete(id);
+            return { msg: 'Pagamento deletado com sucesso' }
+        } catch (error) {
+            throw new InternalServerErrorException('Não foi possivel deletar pagamento')
+        }
     }
 }

@@ -9,31 +9,19 @@ export class ContaController {
     @Post()
     @HttpCode(201)
     async create(@Body() conta: Conta) {
-        try {
-            return await this.contaService.create(conta);
-        } catch (error) {
-            throw new InternalServerErrorException('Não foi possivel cadastrar registro: ', error);
-        }
+        return await this.contaService.create(conta);
     }
-    
+
     @Get()
     @HttpCode(200)
     async get() {
-        try {
-            return await this.contaService.findAll();
-        } catch (error) {
-            throw new BadRequestException('Não foi possivel realizar registro: ', error);
-        }
+        return await this.contaService.findAll();
     }
-    
+
     @Get(':id')
     @HttpCode(200)
-    async getId(@Param('id', ParseIntPipe) id: number) {      
-        try {
-            return await this.contaService.findOne(id);
-        } catch (error) {
-            throw new BadRequestException('Não foi possivel buscar registro: ', error);
-        }
-    }    
+    async getId(@Param('id', ParseIntPipe) id: number) {
+        return await this.contaService.findOne(id);
+    }
 }
 
