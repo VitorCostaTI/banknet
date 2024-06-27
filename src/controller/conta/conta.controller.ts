@@ -34,27 +34,6 @@ export class ContaController {
         } catch (error) {
             throw new BadRequestException('Não foi possivel buscar registro: ', error);
         }
-    }
-    
-    @Put(':id')
-    @HttpCode(201)
-    async update(@Param('id', ParseIntPipe) id: number, @Body() conta: Conta) {
-        try {
-            return await this.contaService.update(id, conta);
-        } catch (error) {
-            throw new InternalServerErrorException('Não foi possivel atualizar registro: ', error);
-        }
-    }
-    
-    @Delete(':id')
-    @HttpCode(201)
-    async delete(@Param('id', ParseIntPipe) id: number){
-        try {
-            return await this.contaService.delete(id);
-        } catch (error) {
-            throw new InternalServerErrorException('Não foi possivel deletar registro: ', error);
-            
-        }
-    }
+    }    
 }
 

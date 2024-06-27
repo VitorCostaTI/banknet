@@ -32,7 +32,7 @@ export class PagamentosService {
 
         const conta = await this.contaRepository.findOne(optionsConta);
         if (!conta) {
-            throw new NotFoundException(`Conta de ${ conta.nome} não encontrada`);
+            throw new NotFoundException(`Conta não encontrada`);
         }
 
         const novoPagamento = this.pagamentoRepository.create(pagamento);
